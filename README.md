@@ -1,59 +1,59 @@
 # Python Scripts Collection
 
-This repository contains my personal Python script collection.
+Personal collection of Python scripts, automation tools, CTF utilities, and practice exercises.
 
-For now, it includes beginner Python practice scripts from the **freeCodeCamp Python certification**. More Python scripts, exercises, small projects, and experiments will be added over time.
-
-## Current Structure
+## Repository Structure
 
 ```text
-python-script/
+python-scripts/
+├── A&D/
+│   └── template_farm.py
 └── fcc-cert/
-    ├── employee-profile-gen.py
-    └── report-card.py
+    ├── 1-report-card.py
+    └── 2-employee-profile-gen.py
 ```
 
-## Current Contents
+---
 
-### `fcc-cert/`
+## Contents
 
-This folder contains my freeCodeCamp Python certification practice files.
+### 1. `A&D/` (Attack & Defense CTF)
 
-Current topics covered:
+Contains automated farming tools and templates for Attack & Defense CTF competitions.
 
-* Variables
-* Basic data types
-* String concatenation
-* Type conversion
-* f-strings
-* String slicing
-* Basic output using `print()`
-* Type checking using `type()` and `isinstance()`
+* **`template_farm.py`**: Generic multi-threaded auto-farming script powered by `pwntools`. Automatically loops through target teams, executes service exploits, extracts flags via regex, filters out duplicates and self-targets, and submits flags to the scoring engine.
 
-## How to Run
+#### How to Use `template_farm.py`:
 
-Go into the folder:
+1. **Configure Targets & Own Service Protection**:
+   ```python
+   MY_TEAM = 1                          # Your team ID (will be excluded from attack)
+   OWN_HOSTS = ["10.60.1.1"]            # Custom IP blacklist to prevent attacking own services
+   TARGETS = [f"10.60.{t}.1" for t in range(1, 21) if t != MY_TEAM]
+   ```
 
-```bash
-cd python-script/fcc-cert
-```
+2. **Set Flag Pattern & Submitter**:
+   ```python
+   FLAG_REGEX = re.compile(r"[A-Za-z0-9_]{3,16}\{[A-Za-z0-9_+\-=/]{16,}\}")
+   SUBMIT_MODE = "http_json"            # Options: "http_json", "http_form", "tcp"
+   SUBMIT_URL = "http://10.10.0.1/api/v1/flags"
+   SUBMIT_TOKEN = "YOUR_TEAM_TOKEN"
+   ```
 
-Run the scripts:
+3. **Implement Exploit**:
+   Put your exploit logic inside the `exploit(target)` function:
+   * **Web/HTTP**: Send requests via `requests.Session()` and return response body.
+   * **Binary/TCP**: Connect via `pwn.remote(host, port)` and return received data.
 
-```bash
-python report-card.py
-python employee-profile-gen.py
-```
+4. **Run the Farmer**:
+   ```bash
+   python3 A&D/template_farm.py
+   ```
 
-Or, depending on your system:
+---
 
-```bash
-python3 report-card.py
-python3 employee-profile-gen.py
-```
+### 2. `fcc-cert/`
 
-## Purpose
-
-This repository is used to track my Python learning progress.
-
-The current focus is freeCodeCamp Python certification practice, but this repo will grow into a broader collection of Python scripts and small projects.
+Practice exercises from the freeCodeCamp Python certification track:
+* `1-report-card.py`: Formatting, f-strings, basic input/output.
+* `2-employee-profile-gen.py`: Data type conversions, slicing, and validation.
